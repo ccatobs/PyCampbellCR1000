@@ -68,7 +68,7 @@ def listfiles_cmd(args, device):
 
 def getfile_cmd(args, device):
     '''Getfile command.'''
-    args.output.write("%s" % device.getfile(args.filename.decode('utf-8')))
+    args.output.write("%s" % device.getfile(args.filename))
 
 
 def listtables_cmd(args, device):
@@ -202,7 +202,7 @@ def main():
                                help='Retrieve the datalogger settings.',
                                func=getsettings_cmd)
     subparser.add_argument('--output', action='store', default=stdout,
-                           type=argparse.FileType('w', 0),
+                           type=argparse.FileType('w'),
                            help='Filename where output is written')
     subparser.add_argument('--delim', action='store', default=",",
                            help='CSV char delimiter')
@@ -220,7 +220,7 @@ def main():
     subparser.add_argument('filename', action="store",
                            help="Filename to be downloaded.")
     subparser.add_argument('output', action='store',
-                           type=argparse.FileType('w', 0),
+                           type=argparse.FileType('w'),
                            help='Filename where output is written')
 
     # listtables command
@@ -239,7 +239,7 @@ def main():
     subparser.add_argument('table', action="store",
                            help="The table name used for data collection")
     subparser.add_argument('output', action='store',
-                           type=argparse.FileType('w', 0),
+                           type=argparse.FileType('w'),
                            help='Filename where output is written')
     subparser.add_argument('--start', help='The beginning datetime record '
                                            '(like : "%s")' % NOW)
@@ -273,8 +273,9 @@ def main():
                                      args.src_addr, args.src, args.code)
             args.func(args, device)
         except Exception as e:
-            parser.error('%s' % e)
-
+            import traceback
+            stack_trace = traceback.format_exc()
+            parser.error(stack_trace)
 
 if __name__ == '__main__':
     main()
