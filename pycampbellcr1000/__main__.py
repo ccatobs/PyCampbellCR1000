@@ -68,7 +68,7 @@ def listfiles_cmd(args, device):
 
 def getfile_cmd(args, device):
     '''Getfile command.'''
-    args.output.write(device.getfile(args.filename).encode('utf-8'))
+    args.output.write(device.getfile(args.filename).decode('utf-8'))
 
 
 def listtables_cmd(args, device):
