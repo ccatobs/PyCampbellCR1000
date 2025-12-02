@@ -53,11 +53,10 @@ def getprogstat_cmd(args, device):
 
 def getsettings_cmd(args, device):
     '''Getsettings command.'''
-    args.delim = args.delim.decode("string-escape")
     data = device.settings
     for item in data:
         item["SettingValue"] = repr(item["SettingValue"])
-    args.output.write("%s" % data.to_csv(delimiter=args.delim))
+    args.output.write(data.to_csv(delimiter=args.delim).encode('utf-8'))
 
 
 def listfiles_cmd(args, device):
@@ -79,11 +78,6 @@ def listtables_cmd(args, device):
 
 def getdata_cmd(args, device, header=True, exclude_first=False):
     '''Getdata command.'''
-    try:
-        args.delim = args.delim.decode("string-escape")
-    except:
-        args.delim = args.delim
-        
     if args.start is not None:
         args.start = datetime.strptime(args.start, "%Y-%m-%d %H:%M")
     if args.stop is not None:
@@ -261,6 +255,9 @@ def main():
 
     # Parse argv arguments
     args = parser.parse_args()
+
+    # handle '\t' delims
+    args.delim = bytes(args.delim, 'utf-8').decode('unicode-escape')
 
     if args.debug:
         active_logger()
